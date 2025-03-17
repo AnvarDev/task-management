@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProjectResource extends Resource
 {
@@ -32,7 +33,9 @@ class ProjectResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('title'),
+                TextColumn::make('title')->searchable(query: function (Builder $query, string $search): Builder {
+                    return $query->where('title', 'like', "%$search%");
+                }),
                 TextColumn::make('created_at'),
             ])
             ->filters([

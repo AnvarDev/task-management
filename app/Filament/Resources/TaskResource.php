@@ -16,7 +16,10 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class TaskResource extends Resource
 {
@@ -32,7 +35,7 @@ class TaskResource extends Resource
                     ->required(),
                 Select::make('project_id')->label('Project')
                     ->searchable()
-                    ->getOptionLabelUsing(fn($value): ?string => Project::find($value)?->title)
+                    ->getOptionLabelUsing(fn($value) => Project::find($value)?->title)
                     ->getSearchResultsUsing(fn(string $query) =>
                     Project::where('title', 'like', "%{$query}%")->orWhere('id', $query)->limit(20)->pluck('title', 'id')),
                 Textarea::make('description'),
@@ -53,16 +56,44 @@ class TaskResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('title'),
+                TextColumn::make('title')->searchable(query: function (Builder $query, string $search): Builder {
+                    return $query->where('title', 'like', "%$search%");
+                }),
                 TextColumn::make('date')->label('Due date'),
                 TextColumn::make('project_id')->label('Project')->formatStateUsing(fn(string $state): string => Project::find($state)?->title),
                 TextColumn::make('priority')->formatStateUsing(fn(string $state): string => config('tasks.priority')[$state]),
                 TextColumn::make('status')->formatStateUsing(fn(string $state): string => config('tasks.status')[$state]),
-                TextColumn::make('date')->label('Due date'),
                 TextColumn::make('created_at'),
             ])
             ->filters([
-                //
+                SelectFilter::make('project_id')->label('Project')
+                    ->multiple()
+                    ->searchable()
+                    ->getOptionLabelsUsing(fn(array $values) => Project::whereIn('id', $values)->pluck('title', 'id'))
+                    ->getSearchResultsUsing(fn(string $query) =>
+                    Project::where('title', 'like', "%{$query}%")->orWhere('id', $query)->limit(20)->pluck('title', 'id')),
+                SelectFilter::make('priority')
+                    ->multiple()
+                    ->options(config('tasks.priority')),
+                SelectFilter::make('status')
+                    ->multiple()
+                    ->options(config('tasks.status')),
+                Filter::make('date')
+                    ->form([
+                        DateTimePicker::make('date_from')->label('Due date from'),
+                        DateTimePicker::make('date_until')->label('Due date to'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['date_from'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('date', '>=', $date),
+                            )
+                            ->when(
+                                $data['date_until'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('date', '<=', $date),
+                            );
+                    })
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
