@@ -9,4 +9,20 @@ class Task extends Model
 {
     /** @use HasFactory<\Database\Factories\StatusFactory> */
     use HasFactory;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
+    protected $fillable = [
+        'title',
+        'description',
+        'date',
+        'attachment',
+        'priority',
+        'status',
+        'project_id',
+        'user_id',
+    ];
 }
