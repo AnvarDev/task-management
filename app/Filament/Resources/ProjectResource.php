@@ -56,6 +56,7 @@ class ProjectResource extends Resource
         ];
     }
 
+    // TODO remove the function and use the booted or delete Model methods to delete all related models
     public static function canDelete(\Illuminate\Database\Eloquent\Model $record): bool
     {
         return $record->tasks()->count() ? false : true;

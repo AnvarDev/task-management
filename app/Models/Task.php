@@ -25,4 +25,12 @@ class Task extends Model
         'project_id',
         'user_id',
     ];
+
+    /**
+     * Get the comments for the task.
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

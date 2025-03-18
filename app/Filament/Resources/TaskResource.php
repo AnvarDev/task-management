@@ -114,4 +114,10 @@ class TaskResource extends Resource
             'edit' => Pages\EditTask::route('/{record}/edit'),
         ];
     }
+
+    // TODO remove the function and use the booted or delete Model methods to delete all related models
+    public static function canDelete(\Illuminate\Database\Eloquent\Model $record): bool
+    {
+        return $record->comments()->count() ? false : true;
+    }
 }
