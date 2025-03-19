@@ -27,6 +27,14 @@ class Task extends Model
     ];
 
     /**
+     * Get the related project.
+     */
+    protected function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
+
+    /**
      * Get the comments for the task.
      */
     public function comments()

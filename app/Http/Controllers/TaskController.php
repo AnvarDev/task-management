@@ -2,49 +2,74 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreTaskRequest;
-use App\Http\Requests\UpdateTaskRequest;
-use App\Models\Task;
+use App\Exceptions\InvalidTaskIdException;
+use App\Http\Resources\TaskCollection;
+use App\Http\Resources\TaskResource;
+use App\Http\Requests\IndexTaskRequest;
+use App\Http\Requests\UpdatePriorityTaskRequest;
+use App\Repositories\TaskRepository;
 
 class TaskController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Create a new controller instance.
      */
-    public function index()
-    {
-        //
-    }
+    public function __construct(protected TaskRepository $repository) {}
 
     /**
-     * Store a newly created resource in storage.
+     * Display a listing of the resource.
+     * 
+     * @param  \App\Http\Requests\IndexTaskRequest  $request
+     * @return \App\Http\Resources\TaskCollection
      */
-    public function store(StoreTaskRequest $request)
+    public function index(IndexTaskRequest $request)
     {
-        //
+        return new TaskCollection($this->repository->getTasksByPriority($request->getPriority(), [
+            'title',
+            'status',
+        ], $request->getProjectId(), $request->getLimit()));
     }
 
     /**
      * Display the specified resource.
+     * 
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Task $task)
+    public function show(int $id)
     {
-        //
+        $task = $this->repository->find($id);
+
+        if (!$task) {
+            throw new InvalidTaskIdException;
+        }
+
+        return new TaskResource($task);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update priority for the specified resource.
+     * 
+     * @param  \App\Http\Requests\UpdatePriorityTaskRequest  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateTaskRequest $request, Task $task)
+    public function priority(UpdatePriorityTaskRequest $request, int $id)
     {
-        //
-    }
+        $task = $this->repository->find($id);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Task $task)
-    {
-        //
+        if (!$task) {
+            throw new InvalidTaskIdException;
+        }
+
+        if ($task->priority !== $request->getPriority()) {
+            $this->repository->update([
+                'priority' => $request->getPriority()
+            ], $id);
+
+            $task->refresh();
+        }
+
+        return new TaskResource($task);
     }
 }
