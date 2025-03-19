@@ -14,7 +14,7 @@ class TasksShowTest extends BaseApiTestCase
      */
     public function test_task_details_denied(): void
     {
-        $this->get('/api/task/' . fake()->randomDigit())->assertUnauthorized();
+        $this->json('GET', '/api/task/' . fake()->randomDigit())->assertUnauthorized();
     }
 
     /**
@@ -24,7 +24,7 @@ class TasksShowTest extends BaseApiTestCase
     {
         Sanctum::actingAs(User::factory()->create());
 
-        $this->get('/api/task/' . fake()->randomDigit())->assertNotFound();
+        $this->json('GET', '/api/task/' . fake()->randomDigit())->assertNotFound();
     }
 
     /**
@@ -36,7 +36,7 @@ class TasksShowTest extends BaseApiTestCase
 
         Sanctum::actingAs(User::factory()->create());
 
-        $response = $this->get('/api/task/' . $task->getKey());
+        $response = $this->json('GET', '/api/task/' . $task->getKey());
 
         $response->assertOk();
         $response->assertJsonStructure([

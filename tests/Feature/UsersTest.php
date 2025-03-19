@@ -13,7 +13,7 @@ class UsersTest extends BaseApiTestCase
      */
     public function test_user_login_with_missed_fields(): void
     {
-        $response = $this->post('/api/auth/login');
+        $response = $this->json('POST', '/api/auth/login');
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors([
@@ -29,7 +29,7 @@ class UsersTest extends BaseApiTestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->post('/api/auth/login', [
+        $response = $this->json('POST', '/api/auth/login', [
             'email' => $user->email,
             'password' => fake()->password(),
         ]);
@@ -50,7 +50,7 @@ class UsersTest extends BaseApiTestCase
             'password' => $password,
         ]);
 
-        $response = $this->post('/api/auth/login', [
+        $response = $this->json('POST', '/api/auth/login', [
             'email' => $user->email,
             'password' => $password,
         ]);
@@ -76,7 +76,7 @@ class UsersTest extends BaseApiTestCase
      */
     public function test_user_details_denied(): void
     {
-        $this->get('/api/auth/me')->assertUnauthorized();
+        $this->json('GET', '/api/auth/me')->assertUnauthorized();
     }
 
     /**
@@ -87,7 +87,7 @@ class UsersTest extends BaseApiTestCase
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $response = $this->get('/api/auth/me');
+        $response = $this->json('GET', '/api/auth/me');
 
         $response->assertOk();
         $response->assertJsonStructure([
@@ -109,7 +109,7 @@ class UsersTest extends BaseApiTestCase
      */
     public function test_user_logout_fail(): void
     {
-        $this->post('/api/auth/logout')->assertUnauthorized();
+        $this->json('POST', '/api/auth/logout')->assertUnauthorized();
     }
 
     /**
@@ -120,7 +120,7 @@ class UsersTest extends BaseApiTestCase
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $response = $this->post('/api/auth/logout');
+        $response = $this->json('POST', '/api/auth/logout');
 
         $response->assertNoContent();
     }

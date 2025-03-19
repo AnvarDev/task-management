@@ -15,7 +15,7 @@ class TasksIndexTest extends BaseApiTestCase
      */
     public function test_tasks_list_denied(): void
     {
-        $this->get('/api/task')->assertUnauthorized();
+        $this->json('GET', '/api/task')->assertUnauthorized();
     }
 
     /**
@@ -25,7 +25,15 @@ class TasksIndexTest extends BaseApiTestCase
     {
         Sanctum::actingAs(User::factory()->create());
 
-        $response = $this->get('/api/task?priority=-1&project_id=0&limit=0');
+        $response = $this->json(
+            'GET',
+            '/api/task',
+            [
+                'priority' => -1,
+                'project_id' => 0,
+                'limit' => 0
+            ]
+        );
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors([
@@ -58,7 +66,7 @@ class TasksIndexTest extends BaseApiTestCase
 
         Sanctum::actingAs(User::factory()->create());
 
-        $response = $this->get('/api/task?priority=' . $priority_1);
+        $response = $this->json('GET', '/api/task', ['priority' => $priority_1]);
 
         $response->assertOk();
         $response->assertJsonCount(7, 'data');
@@ -84,7 +92,7 @@ class TasksIndexTest extends BaseApiTestCase
             ],
         ]);
 
-        $response = $this->get('/api/task?priority=' . $priority_2);
+        $response = $this->json('GET', '/api/task', ['priority' => $priority_2]);
 
         $response->assertOk();
         $response->assertJsonCount(3, 'data');
@@ -112,17 +120,17 @@ class TasksIndexTest extends BaseApiTestCase
 
         Sanctum::actingAs(User::factory()->create());
 
-        $response = $this->get('/api/task?priority=' . $priority);
+        $response = $this->json('GET', '/api/task', ['priority' => $priority]);
 
         $response->assertOk();
         $response->assertJsonCount(10, 'data');
 
-        $response = $this->get('/api/task?priority=' . $priority . '&project_id=' . $project_1->getKey());
+        $response = $this->json('GET', '/api/task', ['priority' => $priority, 'project_id' => $project_1->getKey()]);
 
         $response->assertOk();
         $response->assertJsonCount(7, 'data');
 
-        $response = $this->get('/api/task?priority=' . $priority . '&project_id=' . $project_2->getKey());
+        $response = $this->json('GET', '/api/task', ['priority' => $priority, 'project_id' => $project_2->getKey()]);
 
         $response->assertOk();
         $response->assertJsonCount(3, 'data');
@@ -143,7 +151,7 @@ class TasksIndexTest extends BaseApiTestCase
 
         $limit = 3;
         $page = 2;
-        $response = $this->get('/api/task?priority=' . $priority . '&page=' . $page . '&limit=' . $limit);
+        $response = $this->json('GET', '/api/task', ['priority' => $priority, 'page' => $page, 'limit' => $limit]);
 
         $response->assertOk();
         $response->assertJsonCount($limit, 'data');

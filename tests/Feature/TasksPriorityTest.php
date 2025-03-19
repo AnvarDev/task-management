@@ -14,7 +14,7 @@ class TasksPriorityTest extends BaseApiTestCase
      */
     public function test_update_task_priority_denied(): void
     {
-        $this->put('/api/task/' . fake()->randomDigit() . '/priority')->assertUnauthorized();
+        $this->json('PUT', '/api/task/' . fake()->randomDigit() . '/priority')->assertUnauthorized();
     }
 
     /**
@@ -24,7 +24,7 @@ class TasksPriorityTest extends BaseApiTestCase
     {
         Sanctum::actingAs(User::factory()->create());
 
-        $response = $this->put('/api/task/' . fake()->randomDigit() . '/priority');
+        $response = $this->json('PUT', '/api/task/' . fake()->randomDigit() . '/priority');
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors([
@@ -39,7 +39,7 @@ class TasksPriorityTest extends BaseApiTestCase
     {
         Sanctum::actingAs(User::factory()->create());
 
-        $this->put('/api/task/' . fake()->randomDigit() . '/priority', [
+        $this->json('PUT', '/api/task/' . fake()->randomDigit() . '/priority', [
             'priority' => fake()->randomKey(config('tasks.priority'))
         ])->assertNotFound();
     }
@@ -63,7 +63,7 @@ class TasksPriorityTest extends BaseApiTestCase
 
         Sanctum::actingAs(User::factory()->create());
 
-        $response = $this->put('/api/task/' . $task->getKey() . '/priority', [
+        $response = $this->json('PUT', '/api/task/' . $task->getKey() . '/priority', [
             'priority' => $priority_2,
         ]);
 
@@ -87,6 +87,11 @@ class TasksPriorityTest extends BaseApiTestCase
                     'tasks',
                 ],
             ],
+        ]);
+
+        $this->assertDatabaseHas(Task::class, [
+            'id' => $task->getKey(),
+            'priority' => $priority_2,
         ]);
     }
 }

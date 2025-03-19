@@ -14,7 +14,7 @@ class ProjectsIndexTest extends BaseApiTestCase
      */
     public function test_projects_list_denied(): void
     {
-        $this->get('/api/project')->assertUnauthorized();
+        $this->json('GET', '/api/project')->assertUnauthorized();
     }
 
     /**
@@ -24,7 +24,9 @@ class ProjectsIndexTest extends BaseApiTestCase
     {
         Sanctum::actingAs(User::factory()->create());
 
-        $response = $this->get('/api/project?limit=0');
+        $response = $this->json('GET', '/api/project', [
+            'limit' => 0,
+        ]);
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors([
@@ -41,7 +43,7 @@ class ProjectsIndexTest extends BaseApiTestCase
 
         Sanctum::actingAs(User::factory()->create());
 
-        $response = $this->get('/api/project');
+        $response = $this->json('GET', '/api/project');
 
         $response->assertOk();
         $response->assertJsonStructure([
@@ -75,7 +77,10 @@ class ProjectsIndexTest extends BaseApiTestCase
 
         $limit = 3;
         $page = 2;
-        $response = $this->get('/api/project?page=' . $page . '&limit=' . $limit);
+        $response = $this->json('GET', '/api/project', [
+            'page' => $page,
+            'limit' => $limit
+        ]);
 
         $response->assertOk();
         $response->assertJsonCount($limit, 'data');
