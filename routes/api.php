@@ -20,6 +20,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [TaskController::class, 'index']);
         Route::get('/{id}', [TaskController::class, 'show']);
         Route::put('/{id}/priority', [TaskController::class, 'priority']);
+        Route::put('/{id}/status', [TaskController::class, 'status']);
     });
     Route::prefix('comment')->group(function () {
         Route::get('/', [CommentController::class, 'index']);
