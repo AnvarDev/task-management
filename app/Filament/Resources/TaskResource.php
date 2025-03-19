@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\TaskResource\Pages;
 use App\Models\Project;
 use App\Models\Task;
+use App\Models\User;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
@@ -38,17 +39,23 @@ class TaskResource extends Resource
                     ->getOptionLabelUsing(fn($value) => Project::find($value)?->title)
                     ->getSearchResultsUsing(fn(string $query) =>
                     Project::where('title', 'like', "%{$query}%")->orWhere('id', $query)->limit(20)->pluck('title', 'id')),
-                Textarea::make('description'),
-                DateTimePicker::make('date')
+                Select::make('user_id')->label('Assignee')
+                    ->searchable()
+                    ->getOptionLabelUsing(fn($value) => User::find($value)?->name)
+                    ->getSearchResultsUsing(fn(string $query) =>
+                    User::where('name', 'like', "%{$query}%")->orWhere('email', "%{$query}%")->limit(20)->pluck('name', 'id')),
+                DateTimePicker::make('date')->label('Due date')
                     ->minDate(now()),
-                FileUpload::make('attachment'),
+                Textarea::make('description'),
+                FileUpload::make('attachment')
+                    ->deletable()
+                    ->previewable(false),
                 Radio::make('priority')
                     ->options(config('tasks.priority'))
                     ->required(),
                 Radio::make('status')
                     ->options(config('tasks.status'))
-                    ->required(),
-                Hidden::make('user_id')->default(auth()->user()->getKey()),
+                    ->required()
             ]);
     }
 
