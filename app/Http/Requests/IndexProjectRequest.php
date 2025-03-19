@@ -4,16 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateTaskRequest extends FormRequest
+class IndexProjectRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return false;
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -22,7 +14,17 @@ class UpdateTaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'limit' => ['nullable', 'integer', 'min:1'],
         ];
+    }
+
+    /**
+     * Get the limit parameter of the request.
+     *
+     * @return int
+     */
+    public function getLimit(): int
+    {
+        return intval(!is_null($this->input('limit')) ? $this->input('limit') : 20);
     }
 }

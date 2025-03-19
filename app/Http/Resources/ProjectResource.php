@@ -6,9 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * Class UserResource.
+ * Class ProjectResource.
  */
-class UserResource extends JsonResource
+class ProjectResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,9 +17,6 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
-            'name' => $this->name,
-            'email' => $this->email,
-        ];
+        return array_merge(parent::toArray($request), ['tasks' => $this->tasks()->count()]);
     }
 }
