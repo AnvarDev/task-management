@@ -3,28 +3,11 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Laravel\Sanctum\Sanctum;
-use Tests\TestCase;
+use Tests\BaseApiTestCase;
 
-class UsersTest extends TestCase
+class UsersTest extends BaseApiTestCase
 {
-    use DatabaseTransactions;
-
-    /**
-     * Setup the test environment.
-     *
-     * @return void
-     */
-    protected function setUp(): void
-    {
-        $this->withHeaders([
-            'Accept' => 'application/json',
-        ]);
-
-        parent::setUp();
-    }
-
     /**
      * Test user login endpoint required fields.
      */
@@ -34,7 +17,8 @@ class UsersTest extends TestCase
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors([
-            'email', 'password'
+            'email',
+            'password'
         ]);
     }
 
