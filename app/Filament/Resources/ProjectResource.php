@@ -38,12 +38,14 @@ class ProjectResource extends Resource
                 }),
                 TextColumn::make('created_at'),
             ])
-            ->filters([
-                //
-            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
             ])->defaultSort('id', 'desc');
     }
 
@@ -54,11 +56,5 @@ class ProjectResource extends Resource
             'create' => Pages\CreateProject::route('/create'),
             'edit' => Pages\EditProject::route('/{record}/edit'),
         ];
-    }
-
-    // TODO remove the function and use the booted or delete Model methods to delete all related models
-    public static function canDelete(\Illuminate\Database\Eloquent\Model $record): bool
-    {
-        return $record->tasks()->count() ? false : true;
     }
 }

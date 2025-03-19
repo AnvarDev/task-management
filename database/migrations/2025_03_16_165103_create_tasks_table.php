@@ -23,8 +23,8 @@ return new class extends Migration
             $table->unsignedInteger('user_id')->nullable();
             $table->timestamps();
     
-            $table->foreign('project_id')->references('id')->on('projects');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
 
     }

@@ -18,8 +18,8 @@ return new class extends Migration
             $table->unsignedInteger('user_id');
             $table->timestamps();
 
-            $table->foreign('task_id')->references('id')->on('tasks');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

@@ -66,11 +66,8 @@ class UserResource extends Resource
         ];
     }
 
-    // TODO remove the function and use the booted or delete Model methods to delete all related models
     public static function canDelete(\Illuminate\Database\Eloquent\Model $record): bool
     {
-        return $record->getKey() === auth()->user()->getKey() ||
-            $record->tasks()->count() ||
-            $record->comments()->count() ? false : true;
+        return $record->getKey() === auth()->user()->getKey() ? false : true;
     }
 }
