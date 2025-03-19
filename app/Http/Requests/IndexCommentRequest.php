@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Task;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreCommentRequest extends FormRequest
+class IndexCommentRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -16,7 +16,7 @@ class StoreCommentRequest extends FormRequest
     {
         return [
             'task_id' => ['required', 'exists:' . (new Task)->getTable() . ',' . (new Task)->getKeyName()],
-            'text' => ['required', 'string', 'min:3', 'max:255'],
+            'limit' => ['nullable', 'integer', 'min:1'],
         ];
     }
 
@@ -31,12 +31,12 @@ class StoreCommentRequest extends FormRequest
     }
 
     /**
-     * Get the text parameter of the request.
+     * Get the limit parameter of the request.
      *
-     * @return string
+     * @return int
      */
-    public function getText(): string
+    public function getLimit(): int
     {
-        return $this->input('text');
+        return intval(!is_null($this->input('limit')) ? $this->input('limit') : 20);
     }
 }

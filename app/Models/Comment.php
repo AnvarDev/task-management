@@ -20,4 +20,12 @@ class Comment extends Model
         'task_id',
         'user_id',
     ];
+
+    /**
+     * Get the related user.
+     */
+    protected function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
