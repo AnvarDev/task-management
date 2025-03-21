@@ -37,14 +37,14 @@ const onClick = () => {
     form.processing = true;
     axios.post('/comment', {
         task_id: props.task_id,
-        text: form.comment
+        text: form.text
     }).then((response) => {
         if (response.data?.data) {
             comments.value.unshift(response.data.data);
         }
 
         validation.value = '';
-        form.comment = '';
+        form.text = '';
     })
     .catch((error) => {
         if (error.response.status === 422) {
@@ -71,7 +71,7 @@ const onClick = () => {
                             type="text"
                             class="block w-full"
                             placeholder="Add a comment..."
-                            v-model="form.comment"
+                            v-model="form.text"
                             required
                             autofocus
                             @keyup.enter="onClick"

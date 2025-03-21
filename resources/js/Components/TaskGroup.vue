@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import draggable from 'vuedraggable'
 import Task from "@/Components/Task.vue";
 
 const props = defineProps({
@@ -26,20 +27,31 @@ onMounted(() => {
         tasks.value = response.data.data;
     });
 });
+
+const onEnd = (event) => {
+    if (event.type && event.type == 'end' && event.item?.__draggable_context?.element?.id){
+        if (event.from?.parentElement?.dataset?.index && event.to?.parentElement?.dataset?.index) {
+            axios.put(
+                '/task/' + event.item.__draggable_context.element.id + '/priority', 
+                { priority: event.to.parentElement.dataset.index }
+            );
+        }
+    }
+}
 </script>
 
 <template>
     <div class="flex flex-col">
-        <div
-            class="w-full overflow-hidden bg-white px-6 py-4 sm:max-w-md sm:rounded-lg"
-            :data-index="index"
-        >
+        <div class="w-full overflow-hidden bg-white px-6 py-4 sm:max-w-md sm:rounded-lg">
             <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                 {{ name }}
             </h2>
-
-            <div v-if="tasks" class="mb-4">
-                <Task v-for="task in tasks" :task="task" :status="status"></Task>
+            <div v-if="tasks" class="tasks mb-4" :data-index="index">
+                <draggable :list="tasks" group="tasks" item-key="id" @end="onEnd">
+                    <template #item="{ element }">
+                        <Task :task="element" />
+                    </template>
+                </draggable>
             </div>
         </div>
     </div>
