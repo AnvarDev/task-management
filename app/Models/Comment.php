@@ -22,6 +22,18 @@ class Comment extends Model
     ];
 
     /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'created_at' => 'date:d.m.Y H:i',
+        ];
+    }
+
+    /**
      * Get the related user.
      */
     protected function user()

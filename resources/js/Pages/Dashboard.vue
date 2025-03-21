@@ -1,6 +1,7 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head } from "@inertiajs/vue3";
+import TaskGroup from "@/Components/TaskGroup.vue";
 
 const props = defineProps({
     priority: {
@@ -31,7 +32,12 @@ const props = defineProps({
                     class="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800"
                 >
                     <div class="grid gap-6 lg:grid-cols-4 lg:gap-8 p-6">
-
+                        <TaskGroup
+                            v-for="(name, index) in priority"
+                            :name="name"
+                            :index="index"
+                            :status="status"
+                        ></TaskGroup>
                     </div>
                 </div>
             </div>

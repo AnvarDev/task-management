@@ -27,6 +27,18 @@ class Task extends Model
     ];
 
     /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'date' => 'date:d.m.Y H:i',
+        ];
+    }
+
+    /**
      * Get the related project.
      */
     protected function project()

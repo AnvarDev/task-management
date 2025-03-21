@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
+import DropdownItem from '@/Components/DropdownItem.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
@@ -77,13 +77,11 @@ const logoutUser = () => {
                                     </template>
 
                                     <template #content>
-                                        <DropdownLink
+                                        <DropdownItem
                                             @click="logoutUser"
-                                            href="#"
-                                            as="button"
                                         >
                                             Log Out
-                                        </DropdownLink>
+                                        </DropdownItem>
                                     </template>
                                 </Dropdown>
                             </div>
