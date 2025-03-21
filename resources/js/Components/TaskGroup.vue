@@ -46,10 +46,10 @@ const onEnd = (event) => {
             <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                 {{ name }}
             </h2>
-            <div v-if="tasks" class="tasks mb-4" :data-index="index">
+            <div v-if="tasks" class="tasks mb-4" :id="'task_column_' + index" :data-index="index">
                 <draggable :list="tasks" group="tasks" item-key="id" @end="onEnd">
                     <template #item="{ element }">
-                        <Task :task="element" />
+                        <Task :task="element" :status="status" />
                     </template>
                 </draggable>
             </div>

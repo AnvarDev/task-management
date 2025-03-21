@@ -56,7 +56,7 @@ const onStatusChange = (index) => {
 </script>
 
 <template>
-    <div class="flex flex-col">
+    <div class="flex flex-col" :id="'task_block_' + task.id">
         <div class="mt-6 w-full overflow-hidden px-6 py-4 shadow-md">
             <div class=" cursor-pointer" @click="modalOnClick">
                 <h3 class="mb-4 font-medium">{{ task.title }}</h3>

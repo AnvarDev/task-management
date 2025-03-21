@@ -14,23 +14,38 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::firstOrCreate(
-            [
-                'email' => 'admin@test.com',
-            ],
-            [
-                'name' => 'Admin',
-                'password' => 'admin',
-            ]
-        );
-
         $project = Project::firstOrCreate([
             'title' => 'Default project',
         ]);
 
-        Task::factory(5)->create([
-            'project_id' => $project->getKey(),
-            'user_id' => $user->getKey(),
-        ]);
+        $values = [
+            [
+                'name' => 'Admin',
+                'email' => 'admin@test.com',
+                'password' => 'admin',
+            ],
+            [
+                'name' => 'User',
+                'email' => 'user@test.com',
+                'password' => 'user',
+            ],
+        ];
+
+        foreach ($values as $value) {
+            $user = User::firstOrCreate(
+                [
+                    'email' => $value['email'],
+                ],
+                [
+                    'name' => $value['name'],
+                    'password' => $value['password'],
+                ]
+            );
+
+            Task::factory(5)->create([
+                'project_id' => $project->getKey(),
+                'user_id' => $user->getKey(),
+            ]);
+        }
     }
 }

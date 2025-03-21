@@ -2,7 +2,7 @@ import axios from 'axios';
 window.axios = axios;
 
 // Define the base URL for all axios requests:
-axios.defaults.baseURL = import.meta.env.BASE_URL + 'api';
+axios.defaults.baseURL = import.meta.env.VITE_APP_URL + '/api';
 
 // Configure the default headers for axios:
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -32,3 +32,11 @@ axios.interceptors.response.use(
         return Promise.reject(error);
     }
 );
+
+/**
+ * Echo exposes an expressive API for subscribing to channels and listening
+ * for events that are broadcast by Laravel. Echo and event broadcasting
+ * allow your team to quickly build robust real-time web applications.
+ */
+
+import './echo';

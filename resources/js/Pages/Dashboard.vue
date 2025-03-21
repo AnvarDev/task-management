@@ -12,6 +12,19 @@ const props = defineProps({
     },
 });
 
+Echo.channel('tasks').listen('TaskHasBeenUpdated', (event) => {
+    if (event.id !== undefined && event.new_priority !== undefined && event.old_priority !== undefined) {
+        const task_block = document.getElementById('task_block_' + event.id);
+        if (task_block.closest('.tasks')) {
+            if (task_block.closest('.tasks').dataset?.index !== undefined && task_block.closest('.tasks').dataset?.index != event.new_priority) {
+                const new_column = document.getElementById('task_column_' + event.new_priority);
+                if (new_column && new_column.firstChild) {
+                    new_column.firstChild.appendChild(task_block);
+                }
+            }
+        }
+    }
+});
 </script>
 
 <template>

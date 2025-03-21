@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TaskHasBeenUpdated;
 use App\Exceptions\InvalidTaskIdException;
 use App\Http\Resources\TaskCollection;
 use App\Http\Resources\TaskResource;
@@ -63,12 +64,16 @@ class TaskController extends Controller
             throw new InvalidTaskIdException;
         }
 
-        if ($task->priority !== $request->getPriority()) {
+        $currentPriority = $task->priority;
+
+        if ($currentPriority !== $request->getPriority()) {
             $this->repository->update([
                 'priority' => $request->getPriority()
             ], $id);
 
             $task->refresh();
+
+            event(new TaskHasBeenUpdated($task, $currentPriority));
         }
 
         return new TaskResource($task);

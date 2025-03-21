@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Events\TaskHasBeenUpdated;
 use App\Models\Task;
 use App\Models\User;
+use Illuminate\Support\Facades\Event;
 use Laravel\Sanctum\Sanctum;
 use Tests\BaseApiTestCase;
 
@@ -49,6 +51,8 @@ class TasksPriorityTest extends BaseApiTestCase
      */
     public function test_update_task_priority_can_be_processed(): void
     {
+        Event::fake();
+
         $priorities = config('tasks.priority');
 
         $priority_1 = fake()->randomKey($priorities);
@@ -93,5 +97,7 @@ class TasksPriorityTest extends BaseApiTestCase
             'id' => $task->getKey(),
             'priority' => $priority_2,
         ]);
+
+        Event::assertDispatched(TaskHasBeenUpdated::class);
     }
 }
