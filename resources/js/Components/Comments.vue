@@ -58,38 +58,38 @@ const onClick = () => {
 </script>
 
 <template>
-        <div class="w-full overflow-hidden">
-            <h2 class="text-lg font-medium text-gray-900">Comments </h2>
-            <div v-if="validation" class="mb-4 text-sm font-medium text-red-600">
-                {{ validation }}
-            </div>
-            <form @submit.prevent="submit">
-                <div class="grid grid-cols-7 gap-4">
-                    <div class="flex items-center col-start-1 col-end-6">
-                        <TextInput
-                            id="comment"
-                            type="text"
-                            class="block w-full"
-                            placeholder="Add a comment..."
-                            v-model="form.text"
-                            required
-                            autofocus
-                            @keyup.enter="onClick"
-                        />
-                    </div>
-                    <div class="flex items-center justify-end">
-                        <SecondaryButton
-                            @click="onClick"
-                            :class="{ 'opacity-25': form.processing }"
-                            :disabled="form.processing"
-                        >
-                            Submit
-                        </SecondaryButton>
-                    </div>
-                </div>
-            </form>
-            <div v-if="comments" class="mt-6">
-                <Comment v-for="comment in comments" :comment="comment"></Comment>
-            </div>
+    <div class="w-full overflow-hidden">
+        <h2 class="text-lg font-medium text-gray-900">Comments </h2>
+        <div v-if="validation" class="mb-4 text-sm font-medium text-red-600">
+            {{ validation }}
         </div>
+        <form @submit.prevent="submit">
+            <div class="grid grid-cols-7 gap-4">
+                <div class="flex items-center col-start-1 col-end-6">
+                    <TextInput
+                        id="comment"
+                        type="text"
+                        class="block w-full"
+                        placeholder="Add a comment..."
+                        v-model="form.text"
+                        required
+                        autofocus
+                        @keyup.enter="onClick"
+                    />
+                </div>
+                <div class="flex items-center justify-end">
+                    <SecondaryButton
+                        @click="onClick"
+                        :class="{ 'opacity-25': form.processing }"
+                        :disabled="form.processing"
+                    >
+                        Submit
+                    </SecondaryButton>
+                </div>
+            </div>
+        </form>
+        <div v-if="comments" class="mt-6">
+            <Comment v-for="comment in comments" :comment="comment"></Comment>
+        </div>
+    </div>
 </template>
